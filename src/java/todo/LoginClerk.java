@@ -71,7 +71,13 @@ public class LoginClerk extends HttpServlet {
         if(session==null){
           session=request.getSession(true);
           session.setAttribute("cid", cid);
+        }else{
+          
         }
+        out.println("<p><a href=\"Clerk.html\">管理者用ページへ</a></p>");
+      }else{
+        out.println("ID又はパスワードのどちらか又は両方が間違っています。"+"<br>");
+         out.println("<p><a href=\"ClerkLogin.html\">ログインページに戻る</a></p>");
       }
 
       out.println("</body>");
