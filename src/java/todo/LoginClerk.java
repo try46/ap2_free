@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -36,7 +37,9 @@ public class LoginClerk extends HttpServlet {
    */
   protected void processRequest(HttpServletRequest request, HttpServletResponse response)
           throws ServletException, IOException {
+
     response.setContentType("text/html;charset=UTF-8");
+
     Connection con = null;
     Statement stmt = null;
     PreparedStatement ps = null;
@@ -54,7 +57,6 @@ public class LoginClerk extends HttpServlet {
       String driverUrl = "jdbc:derby://localhost:1527/todo";
       con = DriverManager.getConnection(driverUrl, "db", "db");
       stmt = con.createStatement();
-
       request.setCharacterEncoding("UTF-8");
       String cid = request.getParameter("Clerk_id");
       String cpass = request.getParameter("Clerk_pass");
@@ -81,11 +83,33 @@ public class LoginClerk extends HttpServlet {
         out.println("ID又はパスワードのどちらか又は両方が間違っています。" + "<br>");
         out.println("<p><a href=\"ClerkLogin.html\">ログインページに戻る</a></p>");
       }
-
+      rs.close();
       out.println("</body>");
       out.println("</html>");
     } catch (Exception e) {
       throw new ServletException(e);
+    } finally {
+      if (ps != null) {
+        try {
+          ps.close();
+        } catch (SQLException e) {
+          throw new ServletException(e);
+        }
+      }
+      if (con != null) {
+        try {
+          con.close();
+        } catch (SQLException e) {
+          throw new ServletException(e);
+        }
+      }
+      if (stmt != null) {
+        try {
+          stmt.close();
+        } catch (SQLException e) {
+          throw new ServletException(e);
+        }
+      }
     }
   }
 
