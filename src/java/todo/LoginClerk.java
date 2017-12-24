@@ -40,6 +40,7 @@ public class LoginClerk extends HttpServlet {
     Connection con = null;
     Statement stmt = null;
     PreparedStatement ps = null;
+
     try (PrintWriter out = response.getWriter()) {
       /* TODO output your page here. You may use following sample code. */
       out.println("<!DOCTYPE html>");
@@ -68,16 +69,17 @@ public class LoginClerk extends HttpServlet {
       if (rs.next()) {
         out.println("ログインしました" + "<br>");
         HttpSession session = request.getSession(false);
-        if(session==null){
-          session=request.getSession(true);
+        if (session == null) {
+          session = request.getSession(true);
           session.setAttribute("cid", cid);
-        }else{
-          
+        } else {
+
         }
+        out.println(Base());
         out.println("<p><a href=\"Clerk.html\">管理者用ページへ</a></p>");
-      }else{
-        out.println("ID又はパスワードのどちらか又は両方が間違っています。"+"<br>");
-         out.println("<p><a href=\"ClerkLogin.html\">ログインページに戻る</a></p>");
+      } else {
+        out.println("ID又はパスワードのどちらか又は両方が間違っています。" + "<br>");
+        out.println("<p><a href=\"ClerkLogin.html\">ログインページに戻る</a></p>");
       }
 
       out.println("</body>");
@@ -125,5 +127,10 @@ public class LoginClerk extends HttpServlet {
   public String getServletInfo() {
     return "Short description";
   }// </editor-fold>
+
+  private boolean Base() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+  }
 
 }
