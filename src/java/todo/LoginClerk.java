@@ -7,6 +7,8 @@ package todo;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -18,6 +20,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Statement;
+import java.util.Base64;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -60,6 +63,9 @@ public class LoginClerk extends HttpServlet {
       request.setCharacterEncoding("UTF-8");
       String cid = request.getParameter("Clerk_id");
       String cpass = request.getParameter("Clerk_pass");
+      String sourse = cpass;
+      Charset charset = StandardCharsets.UTF_8;
+      cpass = Base64.getEncoder().encodeToString(sourse.getBytes(charset));
       /*
              *sqlの発行　 
        */
@@ -77,7 +83,7 @@ public class LoginClerk extends HttpServlet {
         } else {
 
         }
-        out.println(Base());
+        //out.println(Base());
         out.println("<p><a href=\"Clerk.html\">管理者用ページへ</a></p>");
       } else {
         out.println("ID又はパスワードのどちらか又は両方が間違っています。" + "<br>");
