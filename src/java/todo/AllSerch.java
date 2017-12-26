@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -55,37 +56,63 @@ public class AllSerch extends HttpServlet {
       String driverUrl = "jdbc:derby://localhost:1527/todo";
       con = DriverManager.getConnection(driverUrl, "db", "db");
       stmt = con.createStatement();
+
       /**
        * Clerk customer productのデータを取得するsql文
        */
-      String sql1 = "select * from clerk";
+      String sql1 = "select * from Clerk";
       String sql2 = "select * from customer";
-      String sql3 = "select * from product";
+      String sql3 = "select * from Product";
+
       ResultSet rs1 = stmt.executeQuery(sql1);
-      ResultSet rs2 = stmt.executeQuery(sql2);
-      ResultSet rs3 = stmt.executeQuery(sql3);
-      
+
       //Product型のArrayListを作成
       List<Product> plist = new ArrayList<>();
-      //Clerk型のArrayListを作成
-      List<Clerk> clist = new ArrayList<>();
       //Customer型のArrayListを作成
       List<Customer> culist = new ArrayList<>();
-      while (rs1.next()&&rs2.next()&&rs3.next()) {        
-        Product p=new Product();
-        p.setProduct_Id(rs1.getInt("Product_ID"));
-        p.setProduct_Name(rs1.getString("Product_Name"));
-        p.setProduct_Price(rs1.getInt("Product_Price"));
-        p.setProduct_Count(rs1.getInt("Product_Count"));
-        plist.add(p);
-        Clerk clerk=new Clerk();
-        
+      //Clerk型のArrayListを作成
+      List<Clerk> clist = new ArrayList<>();
+
+      while (rs1.next()) {
+        Clerk clerk = new Clerk();
+        clerk.setClerk_Id(rs1.getInt("Clerk_Id"));
+        clerk.setClerk_Name(rs1.getString("Clerk_Name"));
+        clerk.setClerk_Pass(rs1.getString("Clerk_Pass"));
+        clist.add(clerk);
+
       }
+      rs1.close();
+      ResultSet rs2 = stmt.executeQuery(sql2);
+      while (rs2.next()) {
+        Customer customer = new Customer();
+        customer.setCustomer_Id(rs2.getInt("Customer_ID"));
+        customer.setCustomer_Name(rs2.getString("Customer_Name"));
+        customer.setCustomer_Pass(rs2.getString("Customer_Pass"));
+        customer.setCustomer_Age(rs2.getString("Customer_Age"));
+        customer.setCustomer_Address(rs2.getString("Customer_Address"));
+        culist.add(customer);
+      }
+      rs2.close();
+      ResultSet rs3 = stmt.executeQuery(sql3);
+      while (rs3.next()) {
+        Product product = new Product();
+        product.setProduct_Id(rs3.getInt("Product_ID"));
+        product.setProduct_Name(rs3.getString("Product_Name"));
+        product.setProduct_Price(rs3.getInt("Product_Price"));
+        product.setProduct_Count(rs3.getInt("Product_Count"));
+        plist.add(product);
+      }
+      rs3.close();
+      request.setAttribute("clist", clist);
+      request.setAttribute("culist", culist);
+      request.setAttribute("plist", plist);
+      RequestDispatcher dispatcher=request.getRequestDispatcher("AllSerch.jsp");
+      dispatcher.forward(request, response);
       out.println("</body>");
       out.println("</html>");
     } catch (Exception e) {
       throw new ServletException(e);
-    }finally {
+    } finally {
       if (ps != null) {
         try {
           ps.close();
