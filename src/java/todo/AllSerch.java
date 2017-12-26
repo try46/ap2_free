@@ -7,28 +7,26 @@ package todo;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.sql.Statement;
-import java.util.Base64;
-import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author try
  */
-@WebServlet(name = "LoginClerk", urlPatterns = {"/todo/LoginClerk"})
-public class LoginClerk extends HttpServlet {
+@WebServlet(name = "AllSerch", urlPatterns = {"/todo/AllSerch"})
+public class AllSerch extends HttpServlet {
 
   /**
    * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -40,66 +38,54 @@ public class LoginClerk extends HttpServlet {
    */
   protected void processRequest(HttpServletRequest request, HttpServletResponse response)
           throws ServletException, IOException {
-
     response.setContentType("text/html;charset=UTF-8");
-
     Connection con = null;
-    Statement stmt = null;
     PreparedStatement ps = null;
-
+    Statement stmt = null;
     try (PrintWriter out = response.getWriter()) {
       /* TODO output your page here. You may use following sample code. */
       out.println("<!DOCTYPE html>");
       out.println("<html>");
       out.println("<head>");
-      out.println("<title>LoginClerk</title>");
+      out.println("<title>Servlet AllSerch</title>");
       out.println("</head>");
       out.println("<body>");
-      out.println("<h1>Servlet LoginClerk at " + request.getContextPath() + "</h1>");
+      out.println("<h1>Servlet AllSerch at " + request.getContextPath() + "</h1>");
       Class.forName("org.apache.derby.jdbc.ClientDriver");
       String driverUrl = "jdbc:derby://localhost:1527/todo";
       con = DriverManager.getConnection(driverUrl, "db", "db");
       stmt = con.createStatement();
-      request.setCharacterEncoding("UTF-8");
-      String cid = request.getParameter("Clerk_id");
-      String cpass = request.getParameter("Clerk_pass");
-      
       /**
-       * Base64で処理をする
+       * Clerk customer productのデータを取得するsql文
        */
+      String sql1 = "select * from clerk";
+      String sql2 = "select * from customer";
+      String sql3 = "select * from product";
+      ResultSet rs1 = stmt.executeQuery(sql1);
+      ResultSet rs2 = stmt.executeQuery(sql2);
+      ResultSet rs3 = stmt.executeQuery(sql3);
       
-      String sourse = cpass;
-      Charset charset = StandardCharsets.UTF_8;
-      cpass = Base64.getEncoder().encodeToString(sourse.getBytes(charset));
-      /*
-             *sqlの発行　 
-       */
-      String sql = "select * from Clerk where Clerk_name=? and Clerk_pass =?";
-      ps = con.prepareStatement(sql);
-      ps.setString(1, cid);
-      ps.setString(2, cpass);
-      ResultSet rs = ps.executeQuery();
-      if (rs.next()) {
-        out.println("ログインしました" + "<br>");
-        HttpSession session = request.getSession(false);
-        if (session == null) {
-          session = request.getSession(true);
-          session.setAttribute("cid", cid);
-        } else {
-
-        }
-        //out.println(Base());
-        out.println("<p><a href=\"Clerk.html\">管理者用ページへ</a></p>");
-      } else {
-        out.println("ID又はパスワードのどちらか又は両方が間違っています。" + "<br>");
-        out.println("<p><a href=\"ClerkLogin.html\">ログインページに戻る</a></p>");
+      //Product型のArrayListを作成
+      List<Product> plist = new ArrayList<>();
+      //Clerk型のArrayListを作成
+      List<Clerk> clist = new ArrayList<>();
+      //Customer型のArrayListを作成
+      List<Customer> culist = new ArrayList<>();
+      while (rs1.next()&&rs2.next()&&rs3.next()) {        
+        Product p=new Product();
+        p.setProduct_Id(rs1.getInt("Product_ID"));
+        p.setProduct_Name(rs1.getString("Product_Name"));
+        p.setProduct_Price(rs1.getInt("Product_Price"));
+        p.setProduct_Count(rs1.getInt("Product_Count"));
+        plist.add(p);
+        Clerk clerk=new Clerk();
+        
       }
-      rs.close();
       out.println("</body>");
       out.println("</html>");
     } catch (Exception e) {
       throw new ServletException(e);
-    } finally {
+    }finally {
       if (ps != null) {
         try {
           ps.close();
@@ -162,10 +148,5 @@ public class LoginClerk extends HttpServlet {
   public String getServletInfo() {
     return "Short description";
   }// </editor-fold>
-
-  private boolean Base() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-
-  }
 
 }
