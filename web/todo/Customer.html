@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+  <head>
+    <title>顧客用ログインページです</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+    <h3>顧客名とパスワードを入力して下さい。</h3>
+    <form action="CustomerLogin" method="post">
+      <table border="1">
+        <tr>
+          <td>
+            顧客名
+          </td>
+          <td>
+            <input type="text" name="Customer_Name">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            パスワード
+          </td>
+          <td>
+            <input type="password" name="Customer_Pass">
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <input type="submit" value="ログイン" />
+          </td>
+        </tr>
+      </table>
+    </form>
+  </body>
+</html>
