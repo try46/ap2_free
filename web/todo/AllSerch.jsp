@@ -87,5 +87,6 @@
     }
   %>
     </table>
+    <p><a href="Clerk.html">店員用ページに戻る</a></p>
 </body>
 </html>
