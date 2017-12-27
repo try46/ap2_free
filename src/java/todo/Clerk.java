@@ -21,6 +21,12 @@ public class Clerk {
   public Clerk() {
   }
 
+  public Clerk(int Clerk_Id, String Clerk_Name, String Clerk_Pass) {
+    this.Clerk_Id = Clerk_Id;
+    this.Clerk_Name = Clerk_Name;
+    this.Clerk_Pass = Clerk_Pass;
+  }
+
   /**
    * @return the Clerk_Name
    */
@@ -61,6 +67,11 @@ public class Clerk {
    */
   public void setClerk_Pass(String Clerk_Pass) {
     this.Clerk_Pass = Clerk_Pass;
+  }
+
+  @Override
+  public String toString() {
+    return "店員情報に右記の情報を追記しました{" + "店員用ID=" + Clerk_Id + ", 店員名=" + Clerk_Name + ", 店員用パスワード=" + Clerk_Pass + '}';
   }
 
 }

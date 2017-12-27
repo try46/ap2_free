@@ -67,26 +67,26 @@
     <h3>商品情報一覧</h3>
     <table border="1">
       <tr>
-      <td>商品ID</td>
-      <td>商品名</td>
-      <td>商品価格</td>
-      <td>在庫数</td>
+        <td>商品ID</td>
+        <td>商品名</td>
+        <td>商品価格</td>
+        <td>在庫数</td>
       </tr>
-    <%
-      List<Product> plist
-              = (ArrayList<Product>) request.getAttribute("plist");
-      for (Product product : plist) {
-    %>
-  <tr>
-    <td><%=product.getProduct_Id()%></td>
-    <td><%=product.getProduct_Name()%></td>
-    <td><%=product.getProduct_Price()%></td>
-    <td><%=product.getProduct_Count()%></td>
-  </tr>
-  <%
-    }
-  %>
+      <%
+        List<Product> plist
+                = (ArrayList<Product>) request.getAttribute("plist");
+        for (Product product : plist) {
+      %>
+      <tr>
+        <td><%=product.getProduct_Id()%></td>
+        <td><%=product.getProduct_Name()%></td>
+        <td><%=product.getProduct_Price()%></td>
+        <td><%=product.getProduct_Count()%></td>
+      </tr>
+      <%
+        }
+      %>
     </table>
     <p><a href="Clerk.html">店員用ページに戻る</a></p>
-</body>
+  </body>
 </html>
