@@ -18,9 +18,9 @@
   </head>
   <body>
     <h3>店員情報一覧</h3>
-    <table border="1">
+    <table border="5" >
       <tr>
-        <td>主キー</td>
+        <td>店員ID</td>
         <td>店員名</td>
         <td>店員用pass</td>
       </tr>
@@ -39,7 +39,7 @@
       %>
     </table>
     <h3>顧客情報一覧</h3>
-    <table border="1">
+    <table border="5" >
       <tr>
         <td>顧客ID</td>
         <td>顧客名</td>
@@ -65,7 +65,7 @@
     </table>
 
     <h3>商品情報一覧</h3>
-    <table border="1">
+    <table border="5" >
       <tr>
         <td>商品ID</td>
         <td>商品名</td>

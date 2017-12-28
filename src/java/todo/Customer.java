@@ -17,13 +17,17 @@ public class Customer {
   private String Customer_Age;
   private String Customer_Address;
 
+  public Customer() {
+  }
 
+  public Customer(int Customer_Id, String Customer_Name, String Customer_Pass, String Customer_Age, String Customer_Address) {
+    this.Customer_Id = Customer_Id;
+    this.Customer_Name = Customer_Name;
+    this.Customer_Pass = Customer_Pass;
+    this.Customer_Age = Customer_Age;
+    this.Customer_Address = Customer_Address;
+  }
 
-  /**
-   * @return the Customer_Name
-   */
-  
-  
   public String getCustomer_Name() {
     return Customer_Name;
   }
@@ -90,5 +94,11 @@ public class Customer {
   public void setCustomer_Address(String Customer_Address) {
     this.Customer_Address = Customer_Address;
   }
+
+  @Override
+  public String toString() {
+    return "右記の情報を顧客情報として追加しました{" + "Customer_Id=" + Customer_Id + ", Customer_Name=" + Customer_Name + ", Customer_Pass=" + Customer_Pass + ", Customer_Age=" + Customer_Age + ", Customer_Address=" + Customer_Address + '}';
+  }
+  
 
 }

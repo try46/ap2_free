@@ -16,7 +16,16 @@ public class Product {
   private int Product_Price;
   private int Product_Count;
 
- 
+  public Product() {
+  }
+
+  public Product(int Product_Id, String Product_Name, int Product_Price, int Product_Count) {
+    this.Product_Id = Product_Id;
+    this.Product_Name = Product_Name;
+    this.Product_Price = Product_Price;
+    this.Product_Count = Product_Count;
+  }
+
   /**
    * @return the Product_Name
    */
@@ -24,7 +33,6 @@ public class Product {
     return Product_Name;
   }
 
- 
   /**
    * @return the Product_Price
    */

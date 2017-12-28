@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+  <head>
+    <title>新規顧客情報入力画面</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+    <h3>追加する顧客情報を入力してください</h3>
+    <form action="AddCustomer" method="post">
+      <table border="5">
+        <tr>
+          <td>顧客名</td>
+          <td><input type="text" name="Customer_Name"></td>
+        </tr>
+        <tr>
+          <td>
+            顧客用パスワード
+          </td>
+          <td>
+            <input type="password" name="Customer_Pass" value="" />
+          </td>
+        </tr>
+        <tr>
+          <td>
+            顧客用確認パスワード
+          </td>
+          <td>
+            <input type="password" name="ChrckCustomer_Pass" value="" />
+          </td>
+        </tr>
+        <tr>
+          <td>
+            年齢選択
+          </td>
+          <td>
+            <input type="radio" name="radio" value="10代">10代
+            <input type="radio" name="radio" value="20代">20代<br>
+            <input type="radio" name="radio" value="30代">30代
+            <input type="radio" name="radio" value="40代">40代<br>
+            <input type="radio" name="radio" value="50代">50代
+            <input type="radio" name="radio" value="60代">60代<br>
+            <input type="radio" name="radio" value="70代">70代
+            <input type="radio" name="radio" value="80代">80代
+          </td>
+        </tr>
+        <tr>
+          <td>住所(市まで入力してください):</td>
+          <td><input type="text" name="address"></td>
+        </tr>
+           <tr>
+          <td colspan="2">
+            <input type="submit" value="追加する" />
+          </td>
+        </tr>
+      </table>
+    </form>
+    <p><a href="AddRecord.html">追加対象選択ページに戻る</a></p>
+    <p><a href="Clerk.html">店員用ページに戻る</a></p>
+  </body>
+</html>
