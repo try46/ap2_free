@@ -43,7 +43,7 @@ public class Logout extends HttpServlet {
       HttpSession session=request.getSession(true);
       session.invalidate();
       out.println("ログアウトしました"+"<br>");
-      out.println("<p><a href=\"ClerkLogin.html\">店員用ログイン画面へ戻る</a></p>");
+      out.println("<p><a href=\"Top.html\">トップ画面へ戻る</a></p>");
       out.println("</body>");
       out.println("</html>");
     }
