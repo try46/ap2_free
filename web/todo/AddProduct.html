@@ -6,36 +6,45 @@ and open the template in the editor.
 -->
 <html>
   <head>
-    <title>顧客用ログインページです</title>
+    <title>商品情報追加</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
   <body>
-    <h3>顧客名とパスワードを入力して下さい。</h3>
-    <form action="CustomerLogin" method="post">
-      <table border="1">
+    <h3>追加する商品情報を入力してください</h3>
+    <form action="AddProduct" method="post">
+      <table border="2">
         <tr>
           <td>
-            顧客名
+             商品名
           </td>
           <td>
-            <input type="text" name="Customer_Name">
+            <input type="text" name="Product_Name" value="" />
           </td>
         </tr>
         <tr>
           <td>
-            パスワード
+            商品価格
           </td>
           <td>
-            <input type="password" name="Customer_Pass">
+            <input type="text" name="Product_Price" value="" />
           </td>
+        </tr>
+        <tr>
+          <td>
+            在庫数
+          </td>
+        <td>
+          <input type="text" name="Product_Count" value="" />
+        </td>
         </tr>
         <tr>
           <td colspan="2">
-            <input type="submit" value="ログイン" />
+            <input type="submit" value="追加する" />
           </td>
         </tr>
       </table>
+      <p><a href="Clerk.html">戻る</a></p>
     </form>
   </body>
 </html>

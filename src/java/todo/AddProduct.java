@@ -10,7 +10,9 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -21,8 +23,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author try
  */
-@WebServlet(name = "CustomerLogin", urlPatterns = {"/todo/CustomerLogin"})
-public class CustomerLogin extends HttpServlet {
+@WebServlet(name = "AddProduct", urlPatterns = {"/todo/AddProduct"})
+public class AddProduct extends HttpServlet {
 
   /**
    * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -38,17 +40,18 @@ public class CustomerLogin extends HttpServlet {
     Connection con = null;
     Statement stmt = null;
     PreparedStatement ps = null;
+    boolean debug = false;
     try (PrintWriter out = response.getWriter()) {
       /* TODO output your page here. You may use following sample code. */
       out.println("<!DOCTYPE html>");
       out.println("<html>");
       out.println("<head>");
-      out.println("<title>Servlet CustomerLogin</title>");      
+      out.println("<title>Servlet AddProduct</title>");
       out.println("</head>");
       out.println("<body>");
-      out.println("<h1>Servlet CustomerLogin at " + request.getContextPath() + "</h1>");
+      out.println("<h1>Servlet AddProduct at " + request.getContextPath() + "</h1>");
       /**
-       * データベースへの接続
+       * データベース接続処理
        */
       Class.forName("org.apache.derby.jdbc.ClientDriver");
       String driverUrl = "jdbc:derby://localhost:1527/todo";
@@ -56,14 +59,54 @@ public class CustomerLogin extends HttpServlet {
       stmt = con.createStatement();
       request.setCharacterEncoding("UTF-8");
       /**
-       * HTMLのフォームから情報を取得
+       * HTMLから情報を取得
        */
-      String cname=request.getParameter("Customer_Name");
-      String cpass=request.getParameter("Customre_Pass");
-      
+      String ProductName = request.getParameter("Product_Name");
+      int ProductPrice = Integer.parseInt(request.getParameter("Product_Price"));
+      int ProductCount = Integer.parseInt(request.getParameter("Product_Count"));
+      /**
+       * デバック用メッセージ
+       */
+      if (debug == true) {
+        out.println(ProductName);
+        out.println(ProductPrice);
+        out.println(ProductCount);
+      }
+      if (ProductName == null || ProductCount == 0 || ProductPrice == 0) {
+        out.println("未入力の個所があるか数が不正です。");
+        out.println("<p><a href=\"AddProduct.html\">商品情報追加ページに戻る</a></p>");
+      }
+      String sql2 = "insert into Product (Product_Name,Product_Price,Product_Count) values (?,?,?)";
+      ps = con.prepareStatement(sql2);
+      ps.setString(1, ProductName);
+      ps.setInt(2, ProductPrice);
+      ps.setInt(3, ProductCount);
+      int count = ps.executeUpdate();
+      /**
+       * データベースに挿入した情報を表示する所
+       */
+      String sql1 = "select * from Product";
+      ResultSet rs = stmt.executeQuery(sql1);
+      int id=0;
+      String name=null;
+      int Productcount=0;
+      int stock=0;
+      ArrayList<Product> plist=new ArrayList<>();
+      while(rs.next()){
+        Product product=new Product(id, name, Productcount, stock);
+        id=rs.getInt("Product_Id");
+        name=rs.getString("Product_Name");
+        Productcount=rs.getInt("Product_Price");
+        stock=rs.getInt("Product_Count");
+        plist.add(product);
+      }
+      rs.close();
+      Product product=new Product(id, name, Productcount, stock);
+      out.println(product+"<br>");
+        out.println("<p><a href=\"AddProduct.html\">戻る</a></p>");
       out.println("</body>");
       out.println("</html>");
-    }catch(Exception e){
+    } catch (Exception e) {
       throw new ServletException(e);
     }
   }

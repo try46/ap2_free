@@ -97,7 +97,7 @@ public class Customer {
 
   @Override
   public String toString() {
-    return "右記の情報を顧客情報として追加しました{" + "Customer_Id=" + Customer_Id + ", Customer_Name=" + Customer_Name + ", Customer_Pass=" + Customer_Pass + ", Customer_Age=" + Customer_Age + ", Customer_Address=" + Customer_Address + '}';
+    return "右記の情報を顧客情報として追加しました{" + "顧客ID=" + Customer_Id + ", 顧客名=" + Customer_Name + ", 顧客用パスワード=" + Customer_Pass + ", 顧客年代=" + Customer_Age + ", 顧客住所=" + Customer_Address + '}';
   }
   
 

@@ -7,8 +7,6 @@ package todo;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -16,19 +14,21 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Base64;
+import java.util.List;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author try
  */
-@WebServlet(name = "AddCustomer", urlPatterns = {"/todo/AddCustomer"})
-public class AddCustomer extends HttpServlet {
+@WebServlet(name = "SerchCustomer", urlPatterns = {"/todo/SerchCustomer"})
+public class SerchCustomer extends HttpServlet {
 
   /**
    * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -44,94 +44,67 @@ public class AddCustomer extends HttpServlet {
     Connection con = null;
     Statement stmt = null;
     PreparedStatement ps = null;
-    boolean debug = false;
+    boolean debug = true;
     try (PrintWriter out = response.getWriter()) {
       /* TODO output your page here. You may use following sample code. */
       out.println("<!DOCTYPE html>");
       out.println("<html>");
       out.println("<head>");
-      out.println("<title>Servlet AddCustomer</title>");
+      out.println("<title>Servlet SerchCustomer</title>");
       out.println("</head>");
       out.println("<body>");
-      out.println("<h1>Servlet AddCustomer at " + request.getContextPath() + "</h1>");
-      /**
-       * データベース接続処理
-       */
+      // out.println("<h1>Servlet SerchCustomer at " + request.getContextPath() + "</h1>");
+      out.println("<h3>" + "あなたの情報です" + "</h3>");
       Class.forName("org.apache.derby.jdbc.ClientDriver");
       String driverUrl = "jdbc:derby://localhost:1527/todo";
       con = DriverManager.getConnection(driverUrl, "db", "db");
       stmt = con.createStatement();
       request.setCharacterEncoding("UTF-8");
-      /**
-       * HTMLから情報を取得
-       */
-      String cname = request.getParameter("Customer_Name");
-      String cpass = request.getParameter("Customer_Pass");
-      String chekcpass = request.getParameter("ChrckCustomer_Pass");
-      String cage = request.getParameter("radio");
-      String caddress = request.getParameter("address");
-      /**
-       * パスワードの一致の確認一致していない 若しくはすべての情報が入力されていない場合 顧客情報追加ページへのリンクを表示する
-       */
-      if (cname == null || cpass == null || chekcpass == null || cage == null || caddress == null) {
-        out.println("未入力の個所があります。");
-        out.println("<p><a href=\"AddCustomer.html\">顧客情報追加ページに戻る</a></p>");
+      HttpSession session = request.getSession(false);
+      List<Customer> culist = new ArrayList<>();
+      if (session == null) {
+        out.println("<p>セッションがありません</p>");
+        out.println("<p><a href=\"Customer.html>ログインページに戻る</a></p>");
       } else {
-        /**
-         * デバック用メッセージ
-         */
         if (debug == true) {
-          out.println(true);
+          out.println(session.getAttribute("cname") + "<br>");
+          out.println(session.getAttribute("cpass") + "<br>");
         }
-      }
-      if (cpass.equals(chekcpass)) {
-        /**
-         * デバック用メッセージ
-         */
-        if (debug == true) {
-          out.println(true);
+        String sql = "select * from Customer where Customer_Name = ? and Customer_Pass=?";
+        ps = con.prepareStatement(sql);
+        ps.setString(1, (String) session.getAttribute("cname"));
+        ps.setString(2, (String) session.getAttribute("cpass"));
+        ResultSet rs = ps.executeQuery();
+        out.println("<table border=\"1\">");
+        out.println("<tr>");
+        out.println("<td>" + "顧客ID" + "</td>");
+        out.println("<td>" + "顧客名" + "</td>");
+        out.println("<td>" + "顧客用パスワード" + "</td>");
+        out.println("<td>" + "顧客年代" + "</td>");
+        out.println("<td>" + "顧客住所" + "</td>");
+        out.println("</tr>");
+        while (rs.next()) {
+          Customer customer = new Customer();
+          customer.setCustomer_Id(rs.getInt("Customer_ID"));
+          customer.setCustomer_Name(rs.getString("Customer_Name"));
+          customer.setCustomer_Pass(rs.getString("Customer_Pass"));
+          customer.setCustomer_Age(rs.getString("Customer_Age"));
+          customer.setCustomer_Address(rs.getString("Customer_Address"));
+          culist.add(customer);
         }
-      } else {
-        out.println("パスワードが一致しません" + "<br>");
-        out.println("<p><a href=\"AddCustomer.html\">顧客情報追加ページに戻る</a></p>");
+        rs.close();
+        for (Customer customer : culist) {
+          out.println("<tr>");
+          out.println("<td>" + customer.getCustomer_Id() + "</td>");
+          out.println("<td>" + customer.getCustomer_Name() + "</td>");
+          out.println("<td>" +customer.getCustomer_Pass() + "</td>");
+          out.println("<td>" +customer.getCustomer_Age() + "</td>");
+          out.println("<td>" + customer.getCustomer_Address()+ "</td>");
+          out.println("</tr>");
+        }
+        out.println("</table>");
       }
-      String source = cpass;
-      Charset charset = StandardCharsets.UTF_8;
-      cpass = Base64.getEncoder().encodeToString(source.getBytes(charset));
-      /**
-       * sql文(insert)の発行
-       */
-      String sql2 = "insert into Customer (Customer_Name,Customer_Pass,Customer_Age,Customer_Address) values (?,?,?,?)";
-      ps = con.prepareStatement(sql2);
-      ps.setString(1, cname);
-      ps.setString(2, cpass);
-      ps.setString(3, cage);
-      ps.setString(4, caddress);
-      int count = ps.executeUpdate();
-      /**
-       * データベースに挿入した情報を表示する所
-       */
-      String sql1 = "select * from Customer";
-      ResultSet rs = stmt.executeQuery(sql1);
-      int id = 0;
-      String name;
-      String pass = null;
-      String age = null;
-      String address = null;
-      ArrayList<Customer> culist = new ArrayList<>();
-      while (rs.next()) {
-        Customer customer = new Customer(id, cname, pass, age, address);
-        id = rs.getInt("Customer_Id");
-        name = rs.getString("Customer_Name");
-        pass = rs.getString("Customer_Pass");
-        age = rs.getString("Customer_Age");
-        address = rs.getString("Customer_Address");
-        culist.add(customer);
-      }
-      rs.close();
-      Customer customer = new Customer(id, cname, pass, age, address);
-      out.println(customer + "<br>");
-      out.println("<p><a href=\"AddCustomer.html\">戻る</a></p>");
+
       out.println("</body>");
       out.println("</html>");
     } catch (Exception e) {
@@ -144,13 +117,6 @@ public class AddCustomer extends HttpServlet {
           throw new ServletException(e);
         }
       }
-      if (stmt != null) {
-        try {
-          stmt.close();
-        } catch (SQLException es) {
-          throw new ServletException(es);
-        }
-      }
       if (con != null) {
         try {
           con.close();
@@ -158,6 +124,14 @@ public class AddCustomer extends HttpServlet {
           throw new ServletException(e);
         }
       }
+      if (stmt != null) {
+        try {
+          stmt.close();
+        } catch (SQLException e) {
+          throw new ServletException(e);
+        }
+      }
+
     }
   }
 

@@ -26,6 +26,11 @@ public class Product {
     this.Product_Count = Product_Count;
   }
 
+  @Override
+  public String toString() {
+    return "商品情報に右記の情報を追記しました{" + "商品ID=" + Product_Id + ", 商品名=" + Product_Name + ", 商品価格=" + Product_Price + ", 在庫数=" + Product_Count + '}';
+  }
+
   /**
    * @return the Product_Name
    */
