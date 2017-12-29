@@ -97,9 +97,9 @@ public class SerchCustomer extends HttpServlet {
           out.println("<tr>");
           out.println("<td>" + customer.getCustomer_Id() + "</td>");
           out.println("<td>" + customer.getCustomer_Name() + "</td>");
-          out.println("<td>" +customer.getCustomer_Pass() + "</td>");
-          out.println("<td>" +customer.getCustomer_Age() + "</td>");
-          out.println("<td>" + customer.getCustomer_Address()+ "</td>");
+          out.println("<td>" + customer.getCustomer_Pass() + "</td>");
+          out.println("<td>" + customer.getCustomer_Age() + "</td>");
+          out.println("<td>" + customer.getCustomer_Address() + "</td>");
           out.println("</tr>");
         }
         out.println("</table>");

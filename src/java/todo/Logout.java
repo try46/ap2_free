@@ -37,12 +37,12 @@ public class Logout extends HttpServlet {
       out.println("<!DOCTYPE html>");
       out.println("<html>");
       out.println("<head>");
-      out.println("<title>ログアウト</title>");      
+      out.println("<title>ログアウト</title>");
       out.println("</head>");
       out.println("<body>");
-      HttpSession session=request.getSession(true);
+      HttpSession session = request.getSession(true);
       session.invalidate();
-      out.println("ログアウトしました"+"<br>");
+      out.println("ログアウトしました" + "<br>");
       out.println("<p><a href=\"Top.html\">トップ画面へ戻る</a></p>");
       out.println("</body>");
       out.println("</html>");

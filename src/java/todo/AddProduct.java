@@ -87,23 +87,23 @@ public class AddProduct extends HttpServlet {
        */
       String sql1 = "select * from Product";
       ResultSet rs = stmt.executeQuery(sql1);
-      int id=0;
-      String name=null;
-      int Productcount=0;
-      int stock=0;
-      ArrayList<Product> plist=new ArrayList<>();
-      while(rs.next()){
-        Product product=new Product(id, name, Productcount, stock);
-        id=rs.getInt("Product_Id");
-        name=rs.getString("Product_Name");
-        Productcount=rs.getInt("Product_Price");
-        stock=rs.getInt("Product_Count");
+      int id = 0;
+      String name = null;
+      int Productcount = 0;
+      int stock = 0;
+      ArrayList<Product> plist = new ArrayList<>();
+      while (rs.next()) {
+        Product product = new Product(id, name, Productcount, stock);
+        id = rs.getInt("Product_Id");
+        name = rs.getString("Product_Name");
+        Productcount = rs.getInt("Product_Price");
+        stock = rs.getInt("Product_Count");
         plist.add(product);
       }
       rs.close();
-      Product product=new Product(id, name, Productcount, stock);
-      out.println(product+"<br>");
-        out.println("<p><a href=\"AddProduct.html\">戻る</a></p>");
+      Product product = new Product(id, name, Productcount, stock);
+      out.println(product + "<br>");
+      out.println("<p><a href=\"AddProduct.html\">戻る</a></p>");
       out.println("</body>");
       out.println("</html>");
     } catch (Exception e) {

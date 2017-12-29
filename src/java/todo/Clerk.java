@@ -5,18 +5,15 @@
  */
 package todo;
 
-
-
 /**
  *
  * @author try
  */
 public class Clerk {
+
   private int Clerk_Id;
   private String Clerk_Name;
   private String Clerk_Pass;
-
- 
 
   public Clerk() {
   }

@@ -106,7 +106,7 @@ public class AllSerch extends HttpServlet {
       request.setAttribute("clist", clist);
       request.setAttribute("culist", culist);
       request.setAttribute("plist", plist);
-      RequestDispatcher dispatcher=request.getRequestDispatcher("AllSerch.jsp");
+      RequestDispatcher dispatcher = request.getRequestDispatcher("AllSerch.jsp");
       dispatcher.forward(request, response);
       out.println("</body>");
       out.println("</html>");

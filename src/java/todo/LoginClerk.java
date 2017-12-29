@@ -63,11 +63,10 @@ public class LoginClerk extends HttpServlet {
       request.setCharacterEncoding("UTF-8");
       String cid = request.getParameter("Clerk_id");
       String cpass = request.getParameter("Clerk_pass");
-      
+
       /**
        * Base64で処理をする
        */
-      
       String sourse = cpass;
       Charset charset = StandardCharsets.UTF_8;
       cpass = Base64.getEncoder().encodeToString(sourse.getBytes(charset));
