@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -98,6 +99,28 @@ public class PrimarySerchClerk extends HttpServlet {
       out.println("</html>");
     } catch (Exception e) {
       throw new ServletException(e);
+    }finally {
+      if (ps != null) {
+        try {
+          ps.close();
+        } catch (SQLException e) {
+          throw new ServletException(e);
+        }
+      }
+      if (con != null) {
+        try {
+          con.close();
+        } catch (SQLException e) {
+          throw new ServletException(e);
+        }
+      }
+      if (stmt != null) {
+        try {
+          stmt.close();
+        } catch (SQLException e) {
+          throw new ServletException(e);
+        }
+      }
     }
   }
 

@@ -21,14 +21,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author try
  */
-@WebServlet(name = "SerchCustomer", urlPatterns = {"/todo/SerchCustomer"})
-public class SerchCustomer extends HttpServlet {
+@WebServlet(name = "SerchPrimaryProduct", urlPatterns = {"/todo/SerchPrimaryProduct"})
+public class SerchPrimaryProduct extends HttpServlet {
 
   /**
    * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -41,70 +40,53 @@ public class SerchCustomer extends HttpServlet {
   protected void processRequest(HttpServletRequest request, HttpServletResponse response)
           throws ServletException, IOException {
     response.setContentType("text/html;charset=UTF-8");
+
     Connection con = null;
     Statement stmt = null;
     PreparedStatement ps = null;
-    boolean debug = true;
+    boolean debug = false;
+
     try (PrintWriter out = response.getWriter()) {
       /* TODO output your page here. You may use following sample code. */
       out.println("<!DOCTYPE html>");
       out.println("<html>");
       out.println("<head>");
-      out.println("<title>Servlet SerchCustomer</title>");
+      out.println("<title>Servlet SerchPrimaryProduct</title>");
       out.println("</head>");
       out.println("<body>");
-      // out.println("<h1>Servlet SerchCustomer at " + request.getContextPath() + "</h1>");
-      out.println("<h3>" + "あなたの情報です" + "</h3>");
+      out.println("<h1>Servlet SerchPrimaryProduct at " + request.getContextPath() + "</h1>");
       Class.forName("org.apache.derby.jdbc.ClientDriver");
       String driverUrl = "jdbc:derby://localhost:1527/todo";
       con = DriverManager.getConnection(driverUrl, "db", "db");
       stmt = con.createStatement();
       request.setCharacterEncoding("UTF-8");
-      HttpSession session = request.getSession(false);
-      List<Customer> culist = new ArrayList<>();
-      if (session == null) {
-        out.println("<p>セッションがありません</p>");
-        out.println("<p><a href=\"Customer.html>ログインページに戻る</a></p>");
-      } else {
-        if (debug == true) {
-          out.println(session.getAttribute("cname") + "<br>");
-          out.println(session.getAttribute("cpass") + "<br>");
-        }
-        String sql = "select * from Customer where Customer_Name = ? and Customer_Pass=?";
-        ps = con.prepareStatement(sql);
-        ps.setString(1, (String) session.getAttribute("cname"));
-        ps.setString(2, (String) session.getAttribute("cpass"));
-        ResultSet rs = ps.executeQuery();
-        out.println("<table border=\"1\">");
-        out.println("<tr>");
-        out.println("<td>" + "顧客ID" + "</td>");
-        out.println("<td>" + "顧客名" + "</td>");
-        out.println("<td>" + "顧客用パスワード" + "</td>");
-        out.println("<td>" + "顧客年代" + "</td>");
-        out.println("<td>" + "顧客住所" + "</td>");
-        out.println("</tr>");
-        while (rs.next()) {
-          Customer customer = new Customer();
-          customer.setCustomer_Id(rs.getInt("Customer_ID"));
-          customer.setCustomer_Name(rs.getString("Customer_Name"));
-          customer.setCustomer_Pass(rs.getString("Customer_Pass"));
-          customer.setCustomer_Age(rs.getString("Customer_Age"));
-          customer.setCustomer_Address(rs.getString("Customer_Address"));
-          culist.add(customer);
-        }
-        rs.close();
-        for (Customer customer : culist) {
-          out.println("<tr>");
-          out.println("<td>" + customer.getCustomer_Id() + "</td>");
-          out.println("<td>" + customer.getCustomer_Name() + "</td>");
-          out.println("<td>" + customer.getCustomer_Pass() + "</td>");
-          out.println("<td>" + customer.getCustomer_Age() + "</td>");
-          out.println("<td>" + customer.getCustomer_Address() + "</td>");
-          out.println("</tr>");
-        }
-        out.println("</table>");
+      /**
+       * HTMLから情報を取得
+       */
+      String Product_Id = request.getParameter("Product_Id");
+      /**
+       * デバック用メッセージ
+       */
+      if (debug == true) {
+        out.println(Product_Id);
       }
-
+      String sql = "select * from Product where Product_Id=?";
+      ps = con.prepareStatement(sql);
+      ps.setInt(1, Integer.parseInt(Product_Id));
+      ResultSet rs = ps.executeQuery();
+      List<Product> plist = new ArrayList<>();
+      while (rs.next()) {
+        Product product = new Product();
+        product.setProduct_Id(rs.getInt("Product_ID"));
+        product.setProduct_Name(rs.getString("Product_Name"));
+        product.setProduct_Price(rs.getInt("Product_Price"));
+        product.setProduct_Count(rs.getInt("Product_Count"));
+        plist.add(product);
+      }
+      rs.close();
+      request.setAttribute("plist", plist);
+      RequestDispatcher dispatcher = request.getRequestDispatcher("Product.jsp");
+      dispatcher.forward(request, response);
       out.println("</body>");
       out.println("</html>");
     } catch (Exception e) {
@@ -131,7 +113,6 @@ public class SerchCustomer extends HttpServlet {
           throw new ServletException(e);
         }
       }
-
     }
   }
 

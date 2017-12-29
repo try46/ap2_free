@@ -21,6 +21,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -52,6 +53,11 @@ public class AllSerch extends HttpServlet {
       out.println("</head>");
       out.println("<body>");
       out.println("<h1>Servlet AllSerch at " + request.getContextPath() + "</h1>");
+      HttpSession session=request.getSession(false);
+      if (session==null) {
+        out.println("このページを閲覧するにはログインが必要です"+"<br>");
+        out.println("<p><a href=\"ClerkLogin.html\">ログインページに戻る</a></p>");
+      }else{
       Class.forName("org.apache.derby.jdbc.ClientDriver");
       String driverUrl = "jdbc:derby://localhost:1527/todo";
       con = DriverManager.getConnection(driverUrl, "db", "db");
@@ -108,6 +114,7 @@ public class AllSerch extends HttpServlet {
       request.setAttribute("plist", plist);
       RequestDispatcher dispatcher = request.getRequestDispatcher("AllSerch.jsp");
       dispatcher.forward(request, response);
+      }
       out.println("</body>");
       out.println("</html>");
     } catch (Exception e) {

@@ -22,6 +22,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -53,6 +54,11 @@ public class AddClerk extends HttpServlet {
       out.println("</head>");
       out.println("<body>");
       out.println("<h1>Servlet AddClerk at " + request.getContextPath() + "</h1>");
+       HttpSession session=request.getSession(false);
+      if (session==null) {
+        out.println("このページを閲覧するにはログインが必要です"+"<br>");
+        out.println("<p><a href=\"ClerkLogin.html\">ログインページに戻る</a></p>");
+      }else{
       /**
        * 54~57 データベース接続処理
        */
@@ -112,6 +118,7 @@ public class AddClerk extends HttpServlet {
       out.println(clerk + "<br>");
       out.println("<p><a href=\"Clerk.html\">戻る</a></p>");
       rs.close();
+      }
       out.println("</body>");
       out.println("</html>");
     } catch (Exception e) {

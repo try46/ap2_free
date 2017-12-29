@@ -18,6 +18,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -50,6 +51,11 @@ public class AddProduct extends HttpServlet {
       out.println("</head>");
       out.println("<body>");
       out.println("<h1>Servlet AddProduct at " + request.getContextPath() + "</h1>");
+      HttpSession session=request.getSession(false);
+      if (session==null) {
+        out.println("このページを閲覧するにはログインが必要です"+"<br>");
+        out.println("<p><a href=\"ClerkLogin.html\">ログインページに戻る</a></p>");
+      }else{
       /**
        * データベース接続処理
        */
@@ -104,6 +110,7 @@ public class AddProduct extends HttpServlet {
       Product product = new Product(id, name, Productcount, stock);
       out.println(product + "<br>");
       out.println("<p><a href=\"AddProduct.html\">戻る</a></p>");
+      }
       out.println("</body>");
       out.println("</html>");
     } catch (Exception e) {
