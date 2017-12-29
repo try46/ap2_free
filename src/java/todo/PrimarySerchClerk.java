@@ -7,16 +7,14 @@ package todo;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Base64;
+import java.util.List;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -27,8 +25,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author try
  */
-@WebServlet(name = "AddClerk", urlPatterns = {"/todo/AddClerk"})
-public class AddClerk extends HttpServlet {
+@WebServlet(name = "PrimarySerchClerk", urlPatterns = {"/todo/PrimarySerchClerk"})
+public class PrimarySerchClerk extends HttpServlet {
 
   /**
    * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -44,18 +42,17 @@ public class AddClerk extends HttpServlet {
     Connection con = null;
     Statement stmt = null;
     PreparedStatement ps = null;
+    boolean debug = false;
     try (PrintWriter out = response.getWriter()) {
       /* TODO output your page here. You may use following sample code. */
       out.println("<!DOCTYPE html>");
       out.println("<html>");
       out.println("<head>");
-      out.println("<title>Servlet AddClerk</title>");
+      out.println("<title>Servlet PrimarySerchClerk</title>");
       out.println("</head>");
       out.println("<body>");
-      out.println("<h1>Servlet AddClerk at " + request.getContextPath() + "</h1>");
-      /**
-       * 54~57 データベース接続処理
-       */
+      out.println("<h1>Servlet PrimarySerchClerk at " + request.getContextPath() + "</h1>");
+
       Class.forName("org.apache.derby.jdbc.ClientDriver");
       String driverUrl = "jdbc:derby://localhost:1527/todo";
       con = DriverManager.getConnection(driverUrl, "db", "db");
@@ -64,80 +61,43 @@ public class AddClerk extends HttpServlet {
       /**
        * HTMLから情報を取得
        */
-      String clerkid = request.getParameter("Clerk_Id");
-      String clerkpass = request.getParameter("Clerk_Pass");
-      String chekclerkpass = request.getParameter("CheckClerk_Pass");
+      String Clerk_Id = request.getParameter("Clerk_Id");
       /**
-       * パスワードの一致の確認一致していない 若しくはすべての情報が入力されていない場合 店員情報追加ページへのリンクを表示する
+       * デバック用メッセージ
        */
-      if (clerkid == null || clerkpass == null || chekclerkpass == null) {
+      if (debug == true) {
+        out.println(Clerk_Id);
+      }
+      /**
+       * 未入力の個所がある場合入力画面へのリンクを表示
+       */
+      if (Clerk_Id == null) {
         out.println("未入力の個所があります。");
-        out.println("<p><a href=\"AddClerk.html\">店員情報追加ページに戻る</a></p>");
+        out.println("<p><a href=\"SerchClerk.html\">店員情報検索ページに戻る</a></p>");
       }
-      if (clerkpass.equals(chekclerkpass)) {
-      } else {
-        out.println("パスワードが一致しません" + "<br>");
-        out.println("<p><a href=\"AddClerk.html\">店員情報追加ページに戻る</a></p>");
+      String sql = "select * from Clerk where Clerk_Id=?";
+      ps=con.prepareStatement(sql);
+      ps.setInt(1, Integer.parseInt(Clerk_Id));
+      ResultSet rs=ps.executeQuery();
+      List<Clerk> clist = new ArrayList<>();
+      while (rs.next()) {        
+        Clerk clerk = new Clerk();
+        clerk.setClerk_Id(rs.getInt("Clerk_Id"));
+        clerk.setClerk_Name(rs.getString("Clerk_Name"));
+        clerk.setClerk_Pass(rs.getString("Clerk_Pass"));
+        clist.add(clerk);
       }
-      /**
-       * Base64でパスワード(clerkpass)をエンコード
-       */
-      String sourse = clerkpass;
-      Charset charset = StandardCharsets.UTF_8;
-      clerkpass = Base64.getEncoder().encodeToString(sourse.getBytes(charset));
-      /**
-       * sql文(insert)の発行
-       */
-      String sql2 = "insert into Clerk (Clerk_Name,Clerk_Pass) values (?,?)";
-      ps = con.prepareStatement(sql2);
-      ps.setString(1, clerkid);
-      ps.setString(2, clerkpass);
-      int count = ps.executeUpdate();
-      /**
-       * データベースに挿入した情報を表示する所
-       */
-      String sql = "select * from Clerk";
-      ResultSet rs = stmt.executeQuery(sql);
-      ArrayList<Clerk> clistList = new ArrayList<>();
-      int id = 0;
-      String name = null, pass = null;
-      while (rs.next()) {
-        Clerk clerk = new Clerk(id, name, clerkpass);
-        id = rs.getInt("Clerk_Id");
-        name = rs.getString("Clerk_Name");
-        pass = rs.getString("Clerk_Pass");
-        clistList.add(clerk);
-      }
-      Clerk clerk = new Clerk(id, name, clerkpass);
-      out.println(clerk + "<br>");
-      out.println("<p><a href=\"Clerk.html\">戻る</a></p>");
       rs.close();
+      /**
+       * JSPへのフォワード処理
+       */
+      request.setAttribute("clist", clist);
+      RequestDispatcher dispatcher=request.getRequestDispatcher("Clerk.jsp");
+      dispatcher.forward(request, response);
       out.println("</body>");
       out.println("</html>");
     } catch (Exception e) {
       throw new ServletException(e);
-    } finally {
-      if (ps != null) {
-        try {
-          ps.close();
-        } catch (SQLException e) {
-          throw new ServletException(e);
-        }
-      }
-      if (stmt != null) {
-        try {
-          stmt.close();
-        } catch (SQLException es) {
-          throw new ServletException(es);
-        }
-      }
-      if (con != null) {
-        try {
-          con.close();
-        } catch (SQLException e) {
-          throw new ServletException(e);
-        }
-      }
     }
   }
 
