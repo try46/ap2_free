@@ -22,7 +22,7 @@
       <tr>
         <td>店員ID</td>
         <td>店員名</td>
-        <td>店員用pass</td>
+        <td>店員用パスワード</td>
       </tr>
       <%
         List<Clerk> clist
