@@ -61,21 +61,21 @@ public class SerchPrimaryCustomer extends HttpServlet {
       /**
        * HTMLから情報を取得
        */
-      String Customer_Id = request.getParameter("Customer_Id");
+      int Customer_Id = Integer.parseInt(request.getParameter("Customer_Id"));
       /**
        * デバック用メッセージ
        */
       if (debug == true) {
         out.println(Customer_Id);
       }
-      if (Customer_Id == null) {
-        out.println("未入力の個所があります。");
-        out.println("<p><a href=\"SerchCustomer.html\">店員情報検索ページに戻る</a></p>");
-      }
+      if (Customer_Id == 0 || Customer_Id < 0) {
+        out.println("未入力の個所があるか、数が不正です。");
+        out.println("<p><a href=\"SerchCustomer.html\">顧客情報検索ページに戻る</a></p>");
+      }else{
       String sql = "select * from Customer where Customer_Id=?";
-      ps=con.prepareStatement(sql);
-      ps.setInt(1, Integer.parseInt(Customer_Id));
-      ResultSet rs=ps.executeQuery();
+      ps = con.prepareStatement(sql);
+      ps.setInt(1, Customer_Id);
+      ResultSet rs = ps.executeQuery();
       List<Customer> culist = new ArrayList<>();
       while (rs.next()) {
         Customer customer = new Customer();
@@ -90,6 +90,7 @@ public class SerchPrimaryCustomer extends HttpServlet {
       request.setAttribute("culist", culist);
       RequestDispatcher dispatcher = request.getRequestDispatcher("Customer.jsp");
       dispatcher.forward(request, response);
+      }
       out.println("</body>");
       out.println("</html>");
     } catch (Exception e) {

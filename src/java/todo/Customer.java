@@ -19,7 +19,14 @@ public class Customer {
 
   public Customer() {
   }
-
+/**
+ * 
+ * @param Customer_Id
+ * @param Customer_Name
+ * @param Customer_Pass
+ * @param Customer_Age
+ * @param Customer_Address 
+ */
   public Customer(int Customer_Id, String Customer_Name, String Customer_Pass, String Customer_Age, String Customer_Address) {
     this.Customer_Id = Customer_Id;
     this.Customer_Name = Customer_Name;

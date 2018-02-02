@@ -24,6 +24,9 @@
         <td>店員名</td>
         <td>店員用パスワード</td>
       </tr>
+      <!--
+      Clerkテーブルの情報を取得
+      -->
       <%
         List<Clerk> clist
                 = (ArrayList< Clerk>) request.getAttribute("clist");
@@ -47,6 +50,9 @@
         <td>顧客年代</td>
         <td>顧客住所</td>
       </tr>
+      <!--
+      Customerテーブルの情報を取得
+      -->
       <%
         List<Customer> culist
                 = (ArrayList<Customer>) request.getAttribute("culist");
@@ -72,6 +78,9 @@
         <td>商品価格</td>
         <td>在庫数</td>
       </tr>
+      <!--
+      Productテーブルの情報を取得
+      -->
       <%
         List<Product> plist
                 = (ArrayList<Product>) request.getAttribute("plist");

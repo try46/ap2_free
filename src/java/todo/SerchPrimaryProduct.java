@@ -63,16 +63,20 @@ public class SerchPrimaryProduct extends HttpServlet {
       /**
        * HTMLから情報を取得
        */
-      String Product_Id = request.getParameter("Product_Id");
+     int Product_Id = Integer.parseInt(request.getParameter("Product_Id"));
       /**
        * デバック用メッセージ
        */
       if (debug == true) {
         out.println(Product_Id);
       }
+      if(Product_Id<0||Product_Id==0){
+        out.println("未入力の個所があるか、数が不正です。");
+        out.println("<p><a href=\"SerchProduct.html\">商品情報検索ページに戻る</a></p>");
+      }else{
       String sql = "select * from Product where Product_Id=?";
       ps = con.prepareStatement(sql);
-      ps.setInt(1, Integer.parseInt(Product_Id));
+      ps.setInt(1,Product_Id);
       ResultSet rs = ps.executeQuery();
       List<Product> plist = new ArrayList<>();
       while (rs.next()) {
@@ -87,6 +91,7 @@ public class SerchPrimaryProduct extends HttpServlet {
       request.setAttribute("plist", plist);
       RequestDispatcher dispatcher = request.getRequestDispatcher("Product.jsp");
       dispatcher.forward(request, response);
+      }
       out.println("</body>");
       out.println("</html>");
     } catch (Exception e) {

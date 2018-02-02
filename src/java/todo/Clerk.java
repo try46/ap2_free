@@ -17,7 +17,12 @@ public class Clerk {
 
   public Clerk() {
   }
-
+/**
+ * 
+ * @param Clerk_Id
+ * @param Clerk_Name
+ * @param Clerk_Pass 
+ */
   public Clerk(int Clerk_Id, String Clerk_Name, String Clerk_Pass) {
     this.Clerk_Id = Clerk_Id;
     this.Clerk_Name = Clerk_Name;

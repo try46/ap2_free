@@ -56,11 +56,17 @@ public class LoginClerk extends HttpServlet {
       out.println("</head>");
       out.println("<body>");
       out.println("<h1>Servlet LoginClerk at " + request.getContextPath() + "</h1>");
+     /**
+      * データベース接続処理
+      */
       Class.forName("org.apache.derby.jdbc.ClientDriver");
       String driverUrl = "jdbc:derby://localhost:1527/todo";
       con = DriverManager.getConnection(driverUrl, "db", "db");
       stmt = con.createStatement();
       request.setCharacterEncoding("UTF-8");
+      /**
+       * htmlから情報を取得
+       */
       String cid = request.getParameter("Clerk_id");
       String cpass = request.getParameter("Clerk_pass");
 

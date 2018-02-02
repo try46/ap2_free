@@ -90,7 +90,9 @@ public class AddCustomer extends HttpServlet {
           out.println(true);
         }
       }
-      if (cpass.equals(chekcpass)) {
+      if (!cpass.equals(chekcpass)) {
+         out.println("パスワードが一致しません" + "<br>");
+        out.println("<p><a href=\"AddCustomer.html\">顧客情報追加ページに戻る</a></p>");
         /**
          * デバック用メッセージ
          */
@@ -98,9 +100,8 @@ public class AddCustomer extends HttpServlet {
           out.println(true);
         }
       } else {
-        out.println("パスワードが一致しません" + "<br>");
-        out.println("<p><a href=\"AddCustomer.html\">顧客情報追加ページに戻る</a></p>");
-      }
+        
+      
       String source = cpass;
       Charset charset = StandardCharsets.UTF_8;
       cpass = Base64.getEncoder().encodeToString(source.getBytes(charset));
@@ -138,6 +139,7 @@ public class AddCustomer extends HttpServlet {
       Customer customer = new Customer(id, cname, pass, age, address);
       out.println(customer + "<br>");
       out.println("<p><a href=\"AddCustomer.html\">戻る</a></p>");
+      }
       }
       out.println("</body>");
       out.println("</html>");

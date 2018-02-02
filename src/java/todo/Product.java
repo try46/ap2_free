@@ -18,7 +18,13 @@ public class Product {
 
   public Product() {
   }
-
+/**
+ * 
+ * @param Product_Id
+ * @param Product_Name
+ * @param Product_Price
+ * @param Product_Count 
+ */
   public Product(int Product_Id, String Product_Name, int Product_Price, int Product_Count) {
     this.Product_Id = Product_Id;
     this.Product_Name = Product_Name;

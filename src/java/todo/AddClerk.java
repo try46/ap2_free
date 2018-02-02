@@ -80,11 +80,11 @@ public class AddClerk extends HttpServlet {
         out.println("未入力の個所があります。");
         out.println("<p><a href=\"AddClerk.html\">店員情報追加ページに戻る</a></p>");
       }
-      if (clerkpass.equals(chekclerkpass)) {
-      } else {
+      if (!clerkpass.equals(chekclerkpass)) {
         out.println("パスワードが一致しません" + "<br>");
         out.println("<p><a href=\"AddClerk.html\">店員情報追加ページに戻る</a></p>");
-      }
+      } else {
+      
       /**
        * Base64でパスワード(clerkpass)をエンコード
        */
@@ -118,6 +118,7 @@ public class AddClerk extends HttpServlet {
       out.println(clerk + "<br>");
       out.println("<p><a href=\"Clerk.html\">戻る</a></p>");
       rs.close();
+      }
       }
       out.println("</body>");
       out.println("</html>");

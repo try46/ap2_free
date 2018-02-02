@@ -40,6 +40,9 @@ public class PrimarySerchClerk extends HttpServlet {
   protected void processRequest(HttpServletRequest request, HttpServletResponse response)
           throws ServletException, IOException {
     response.setContentType("text/html;charset=UTF-8");
+    /**
+     * データベース接続用の諸々とデバック用変数
+     */
     Connection con = null;
     Statement stmt = null;
     PreparedStatement ps = null;
@@ -55,6 +58,9 @@ public class PrimarySerchClerk extends HttpServlet {
       out.println("<h1>Servlet PrimarySerchClerk at " + request.getContextPath() + "</h1>");
 
       Class.forName("org.apache.derby.jdbc.ClientDriver");
+      /**
+       * データベース接続処理と文字コード関係の処理
+       */
       String driverUrl = "jdbc:derby://localhost:1527/todo";
       con = DriverManager.getConnection(driverUrl, "db", "db");
       stmt = con.createStatement();
@@ -62,7 +68,7 @@ public class PrimarySerchClerk extends HttpServlet {
       /**
        * HTMLから情報を取得
        */
-      String Clerk_Id = request.getParameter("Clerk_Id");
+      int Clerk_Id = Integer.parseInt(request.getParameter("Clerk_Id"));
       /**
        * デバック用メッセージ
        */
@@ -72,34 +78,35 @@ public class PrimarySerchClerk extends HttpServlet {
       /**
        * 未入力の個所がある場合入力画面へのリンクを表示
        */
-      if (Clerk_Id == null) {
-        out.println("未入力の個所があります。");
+      if (Clerk_Id < 0 || Clerk_Id == 0) {
+        out.println("未入力の個所があるか、数が不正です。");
         out.println("<p><a href=\"SerchClerk.html\">店員情報検索ページに戻る</a></p>");
+      } else {
+        String sql = "select * from Clerk where Clerk_Id=?";
+        ps = con.prepareStatement(sql);
+        ps.setInt(1, Clerk_Id);
+        ResultSet rs = ps.executeQuery();
+        List<Clerk> clist = new ArrayList<>();
+        while (rs.next()) {
+          Clerk clerk = new Clerk();
+          clerk.setClerk_Id(rs.getInt("Clerk_Id"));
+          clerk.setClerk_Name(rs.getString("Clerk_Name"));
+          clerk.setClerk_Pass(rs.getString("Clerk_Pass"));
+          clist.add(clerk);
+        }
+        rs.close();
+        /**
+         * JSPへのフォワード処理
+         */
+        request.setAttribute("clist", clist);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("Clerk.jsp");
+        dispatcher.forward(request, response);
       }
-      String sql = "select * from Clerk where Clerk_Id=?";
-      ps=con.prepareStatement(sql);
-      ps.setInt(1, Integer.parseInt(Clerk_Id));
-      ResultSet rs=ps.executeQuery();
-      List<Clerk> clist = new ArrayList<>();
-      while (rs.next()) {        
-        Clerk clerk = new Clerk();
-        clerk.setClerk_Id(rs.getInt("Clerk_Id"));
-        clerk.setClerk_Name(rs.getString("Clerk_Name"));
-        clerk.setClerk_Pass(rs.getString("Clerk_Pass"));
-        clist.add(clerk);
-      }
-      rs.close();
-      /**
-       * JSPへのフォワード処理
-       */
-      request.setAttribute("clist", clist);
-      RequestDispatcher dispatcher=request.getRequestDispatcher("Clerk.jsp");
-      dispatcher.forward(request, response);
       out.println("</body>");
       out.println("</html>");
     } catch (Exception e) {
       throw new ServletException(e);
-    }finally {
+    } finally {
       if (ps != null) {
         try {
           ps.close();

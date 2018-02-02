@@ -51,65 +51,69 @@ public class AddProduct extends HttpServlet {
       out.println("</head>");
       out.println("<body>");
       out.println("<h1>Servlet AddProduct at " + request.getContextPath() + "</h1>");
-      HttpSession session=request.getSession(false);
-      if (session==null) {
-        out.println("このページを閲覧するにはログインが必要です"+"<br>");
+      HttpSession session = request.getSession(false);
+      if (session == null) {
+        out.println("このページを閲覧するにはログインが必要です" + "<br>");
         out.println("<p><a href=\"ClerkLogin.html\">ログインページに戻る</a></p>");
-      }else{
-      /**
-       * データベース接続処理
-       */
-      Class.forName("org.apache.derby.jdbc.ClientDriver");
-      String driverUrl = "jdbc:derby://localhost:1527/todo";
-      con = DriverManager.getConnection(driverUrl, "db", "db");
-      stmt = con.createStatement();
-      request.setCharacterEncoding("UTF-8");
-      /**
-       * HTMLから情報を取得
-       */
-      String ProductName = request.getParameter("Product_Name");
-      int ProductPrice = Integer.parseInt(request.getParameter("Product_Price"));
-      int ProductCount = Integer.parseInt(request.getParameter("Product_Count"));
-      /**
-       * デバック用メッセージ
-       */
-      if (debug == true) {
-        out.println(ProductName);
-        out.println(ProductPrice);
-        out.println(ProductCount);
-      }
-      if (ProductName == null || ProductCount == 0 || ProductPrice == 0) {
-        out.println("未入力の個所があるか数が不正です。");
-        out.println("<p><a href=\"AddProduct.html\">商品情報追加ページに戻る</a></p>");
-      }
-      String sql2 = "insert into Product (Product_Name,Product_Price,Product_Count) values (?,?,?)";
-      ps = con.prepareStatement(sql2);
-      ps.setString(1, ProductName);
-      ps.setInt(2, ProductPrice);
-      ps.setInt(3, ProductCount);
-      int count = ps.executeUpdate();
-      /**
-       * データベースに挿入した情報を表示する所
-       */
-      String sql1 = "select * from Product";
-      ResultSet rs = stmt.executeQuery(sql1);
-      int id = 0;
-      String name = null;
-      int Productcount = 0;
-      int stock = 0;
-      ArrayList<Product> plist = new ArrayList<>();
-      while (rs.next()) {
-        Product product = new Product(id, name, Productcount, stock);
-        id = rs.getInt("Product_Id");
-        name = rs.getString("Product_Name");
-        Productcount = rs.getInt("Product_Price");
-        stock = rs.getInt("Product_Count");
-        plist.add(product);
-      }
-      rs.close();
-      Product product = new Product(id, name, Productcount, stock);
-      out.println(product + "<br>");
-      out.println("<p><a href=\"AddProduct.html\">戻る</a></p>");
+      } else {
+        /**
+         * データベース接続処理
+         */
+        Class.forName("org.apache.derby.jdbc.ClientDriver");
+        String driverUrl = "jdbc:derby://localhost:1527/todo";
+        con = DriverManager.getConnection(driverUrl, "db", "db");
+        stmt = con.createStatement();
+        request.setCharacterEncoding("UTF-8");
+        /**
+         * HTMLから情報を取得
+         */
+        String ProductName = request.getParameter("Product_Name");
+        int ProductPrice = Integer.parseInt(request.getParameter("Product_Price"));
+        int ProductCount = Integer.parseInt(request.getParameter("Product_Count"));
+        /**
+         * デバック用メッセージ
+         */
+        if (debug == true) {
+          out.println(ProductName);
+          out.println(ProductPrice);
+          out.println(ProductCount);
+        }
+        if (ProductName == null || ProductCount < 0 || ProductPrice < 0) {
+          out.println("未入力の個所があるか数が不正です。");
+          out.println("<p><a href=\"AddProduct.html\">商品情報追加ページに戻る</a></p>");
+        } else {
+          /**
+           * sql文(insert)の発行
+           */
+          String sql2 = "insert into Product (Product_Name,Product_Price,Product_Count) values (?,?,?)";
+          ps = con.prepareStatement(sql2);
+          ps.setString(1, ProductName);
+          ps.setInt(2, ProductPrice);
+          ps.setInt(3, ProductCount);
+          int count = ps.executeUpdate();
+          /**
+           * データベースに挿入した情報を表示する所
+           */
+          String sql1 = "select * from Product";
+          ResultSet rs = stmt.executeQuery(sql1);
+          int id = 0;
+          String name = null;
+          int Productcount = 0;
+          int stock = 0;
+          ArrayList<Product> plist = new ArrayList<>();
+          while (rs.next()) {
+            Product product = new Product(id, name, Productcount, stock);
+            id = rs.getInt("Product_Id");
+            name = rs.getString("Product_Name");
+            Productcount = rs.getInt("Product_Price");
+            stock = rs.getInt("Product_Count");
+            plist.add(product);
+          }
+          rs.close();
+          Product product = new Product(id, name, Productcount, stock);
+          out.println(product + "<br>");
+          out.println("<p><a href=\"AddProduct.html\">戻る</a></p>");
+        }
       }
       out.println("</body>");
       out.println("</html>");

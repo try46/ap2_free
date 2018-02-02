@@ -53,67 +53,84 @@ public class AllSerch extends HttpServlet {
       out.println("</head>");
       out.println("<body>");
       out.println("<h1>Servlet AllSerch at " + request.getContextPath() + "</h1>");
-      HttpSession session=request.getSession(false);
-      if (session==null) {
-        out.println("このページを閲覧するにはログインが必要です"+"<br>");
-        out.println("<p><a href=\"ClerkLogin.html\">ログインページに戻る</a></p>");
-      }else{
-      Class.forName("org.apache.derby.jdbc.ClientDriver");
-      String driverUrl = "jdbc:derby://localhost:1527/todo";
-      con = DriverManager.getConnection(driverUrl, "db", "db");
-      stmt = con.createStatement();
-
       /**
-       * Clerk customer productのデータを取得するsql文
+       * sessionが存在しているか
        */
-      String sql1 = "select * from Clerk";
-      String sql2 = "select * from customer";
-      String sql3 = "select * from Product";
+      HttpSession session = request.getSession(false);
+      if (session == null) {
+        out.println("このページを閲覧するにはログインが必要です" + "<br>");
+        out.println("<p><a href=\"ClerkLogin.html\">ログインページに戻る</a></p>");
+      } else {
+        /**
+         * データベース接続処理
+         */
+        Class.forName("org.apache.derby.jdbc.ClientDriver");
+        String driverUrl = "jdbc:derby://localhost:1527/todo";
+        con = DriverManager.getConnection(driverUrl, "db", "db");
+        stmt = con.createStatement();
 
-      ResultSet rs1 = stmt.executeQuery(sql1);
+        /**
+         * Clerk customer productのデータを取得するsql文
+         */
+        String sql1 = "select * from Clerk";
+        String sql2 = "select * from customer";
+        String sql3 = "select * from Product";
 
-      //Product型のArrayListを作成
-      List<Product> plist = new ArrayList<>();
-      //Customer型のArrayListを作成
-      List<Customer> culist = new ArrayList<>();
-      //Clerk型のArrayListを作成
-      List<Clerk> clist = new ArrayList<>();
+        ResultSet rs1 = stmt.executeQuery(sql1);
 
-      while (rs1.next()) {
-        Clerk clerk = new Clerk();
-        clerk.setClerk_Id(rs1.getInt("Clerk_Id"));
-        clerk.setClerk_Name(rs1.getString("Clerk_Name"));
-        clerk.setClerk_Pass(rs1.getString("Clerk_Pass"));
-        clist.add(clerk);
+        //Product型のArrayListを作成
+        List<Product> plist = new ArrayList<>();
+        //Customer型のArrayListを作成
+        List<Customer> culist = new ArrayList<>();
+        //Clerk型のArrayListを作成
+        List<Clerk> clist = new ArrayList<>();
+        /**
+         *Clerkの情報を取得
+         */
+        while (rs1.next()) {
+          Clerk clerk = new Clerk();
+          clerk.setClerk_Id(rs1.getInt("Clerk_Id"));
+          clerk.setClerk_Name(rs1.getString("Clerk_Name"));
+          clerk.setClerk_Pass(rs1.getString("Clerk_Pass"));
+          clist.add(clerk);
 
-      }
-      rs1.close();
-      ResultSet rs2 = stmt.executeQuery(sql2);
-      while (rs2.next()) {
-        Customer customer = new Customer();
-        customer.setCustomer_Id(rs2.getInt("Customer_ID"));
-        customer.setCustomer_Name(rs2.getString("Customer_Name"));
-        customer.setCustomer_Pass(rs2.getString("Customer_Pass"));
-        customer.setCustomer_Age(rs2.getString("Customer_Age"));
-        customer.setCustomer_Address(rs2.getString("Customer_Address"));
-        culist.add(customer);
-      }
-      rs2.close();
-      ResultSet rs3 = stmt.executeQuery(sql3);
-      while (rs3.next()) {
-        Product product = new Product();
-        product.setProduct_Id(rs3.getInt("Product_ID"));
-        product.setProduct_Name(rs3.getString("Product_Name"));
-        product.setProduct_Price(rs3.getInt("Product_Price"));
-        product.setProduct_Count(rs3.getInt("Product_Count"));
-        plist.add(product);
-      }
-      rs3.close();
-      request.setAttribute("clist", clist);
-      request.setAttribute("culist", culist);
-      request.setAttribute("plist", plist);
-      RequestDispatcher dispatcher = request.getRequestDispatcher("AllSerch.jsp");
-      dispatcher.forward(request, response);
+        }
+        rs1.close();
+        /**
+         * Customerの情報を取得
+         */
+        ResultSet rs2 = stmt.executeQuery(sql2);
+        while (rs2.next()) {
+          Customer customer = new Customer();
+          customer.setCustomer_Id(rs2.getInt("Customer_ID"));
+          customer.setCustomer_Name(rs2.getString("Customer_Name"));
+          customer.setCustomer_Pass(rs2.getString("Customer_Pass"));
+          customer.setCustomer_Age(rs2.getString("Customer_Age"));
+          customer.setCustomer_Address(rs2.getString("Customer_Address"));
+          culist.add(customer);
+        }
+        rs2.close();
+        /**
+         * Productの情報を取得
+         */
+        ResultSet rs3 = stmt.executeQuery(sql3);
+        while (rs3.next()) {
+          Product product = new Product();
+          product.setProduct_Id(rs3.getInt("Product_ID"));
+          product.setProduct_Name(rs3.getString("Product_Name"));
+          product.setProduct_Price(rs3.getInt("Product_Price"));
+          product.setProduct_Count(rs3.getInt("Product_Count"));
+          plist.add(product);
+        }
+        rs3.close();
+        /**
+         * JSPへのフォワード処理
+         */
+        request.setAttribute("clist", clist);
+        request.setAttribute("culist", culist);
+        request.setAttribute("plist", plist);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("AllSerch.jsp");
+        dispatcher.forward(request, response);
       }
       out.println("</body>");
       out.println("</html>");
